@@ -2,14 +2,14 @@ import pytest
 from printer import *
 
 
-def test_print_number():
+def test_visit_number():
     printer = PrettyPrinter()
     num = Number(101)
     num.accept(printer)
     assert printer.out == '101'
 
 
-def test_print_conditional():
+def test_visit_conditional():
     printer = PrettyPrinter()
     cond1 = Conditional(Number(1), [Number(10), Number(11)])
     cond2 = Conditional(Number(42), [cond1, Number(12)], [Number(13)])
@@ -26,7 +26,7 @@ def test_print_conditional():
         '}'
 
 
-def test_function_definition():
+def test_visit_function_definition():
     printer = PrettyPrinter()
     func = Function(['a', 'b'], [Number(12), Number(13)])
     func_def = FunctionDefinition('func', func)
@@ -43,6 +43,13 @@ def test_visit_print():
     print_ = Print(Number(42))
     print_.accept(printer)
     assert printer.out == 'print 42;'
+
+
+def test_visit_read():
+    printer = PrettyPrinter()
+    read = Read("aaa")
+    read.accept(printer)
+    assert printer.out == 'read aaa;'
 
 
 if __name__ == "__main__":

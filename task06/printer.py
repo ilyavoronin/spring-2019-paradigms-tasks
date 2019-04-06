@@ -47,7 +47,7 @@ class PrettyPrinter(ASTNodeVisitor):
         self.out += ';'
 
     def visit_read(self, read):
-        pass
+        self.out += 'read ' + read.name + ';'
 
     def visit_function_call(self, function_call):
         pass
