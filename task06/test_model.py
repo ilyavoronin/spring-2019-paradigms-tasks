@@ -156,5 +156,55 @@ def test_all():
     assert func_call.evaluate(scope) == Number(5040)
 
 
+def test_abstract_visitor():
+    objects = [
+        Number(''),
+        Function('', ''),
+        FunctionDefinition('', ''),
+        Conditional(''),
+        Print(''),
+        Read(''),
+        FunctionCall('', ''),
+        Reference(''),
+        BinaryOperation('', '+', ''),
+        UnaryOperation('!', '')
+    ]
+
+    class TestVisitor(ASTNodeVisitor):
+        def visit_number(self, number):
+            pass
+
+        def visit_function(self, function):
+            pass
+
+        def visit_function_definition(self, function_definition):
+            pass
+
+        def visit_conditional(self, conditional):
+            pass
+
+        def visit_print(self, print_):
+            pass
+
+        def visit_read(self, read):
+            pass
+
+        def visit_function_call(self, function_call):
+            pass
+
+        def visit_reference(self, reference):
+            pass
+
+        def visit_binary_operation(self, binary_operation):
+            pass
+
+        def visit_unary_operation(self, unary_operation):
+            pass
+
+    visitor = TestVisitor()
+    for obj in objects:
+        obj.accept(visitor)
+
+
 if __name__ == "__main__":
     pytest.main()
