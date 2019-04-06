@@ -38,5 +38,12 @@ def test_function_definition():
         '}'
 
 
+def test_visit_print():
+    printer = PrettyPrinter()
+    print_ = Print(Number(42))
+    print_.accept(printer)
+    assert printer.out == 'print 42;'
+
+
 if __name__ == "__main__":
     pytest.main(args=['-vv'])

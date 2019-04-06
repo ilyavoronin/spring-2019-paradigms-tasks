@@ -42,7 +42,9 @@ class PrettyPrinter(ASTNodeVisitor):
             self.add_statements(conditional.if_false)
 
     def visit_print(self, print_):
-        pass
+        self.out += 'print '
+        print_.expr.accept(self)
+        self.out += ';'
 
     def visit_read(self, read):
         pass
