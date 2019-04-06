@@ -6,6 +6,9 @@ class PrettyPrinter(ASTNodeVisitor):
         self.out = ''
         self.indent = 0
 
+    def get_out(self):
+        return self.out + ';'
+
     def add_indent(self):
         self.out += '    ' * self.indent
 
@@ -71,11 +74,8 @@ class PrettyPrinter(ASTNodeVisitor):
         self.out += unary_operation.op
         unary_operation.expr.accept(self)
 
-    def print(self):
-        print(self.out + ';')
-
 
 def pretty_print(program):
     printer = PrettyPrinter()
     program.accept(printer)
-    printer.print()
+    print(printer.get_out())

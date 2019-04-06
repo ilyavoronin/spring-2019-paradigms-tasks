@@ -83,5 +83,35 @@ def test_function_call():
     assert printer.out == 'f2(12, f1(10, 11))'
 
 
+def test_all(capsys):
+    pretty_print(FunctionDefinition('main', Function(['arg1'], [
+        Read('x'),
+        Print(Reference('x')),
+        Conditional(
+            BinaryOperation(Number(2), '==', Number(3)),
+            [
+                Conditional(Number(1), [], [])
+            ],
+            [
+                FunctionCall(Reference('exit'), [
+                    UnaryOperation('-', Reference('arg1'))
+                ])
+            ],
+        ),
+    ])))
+    out = capsys.readouterr().out
+    assert out == \
+        'def main(arg1) {\n' + \
+        '    read x;\n' + \
+        '    print x;\n' + \
+        '    if ((2) == (3)) {\n' + \
+        '        if (1) {\n' + \
+        '        };\n' + \
+        '    } else {\n' + \
+        '        exit(-arg1);\n' + \
+        '    };\n' + \
+        '};\n'
+
+
 if __name__ == "__main__":
     pytest.main(args=['-vv'])
