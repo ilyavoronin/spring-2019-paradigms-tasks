@@ -4,6 +4,22 @@ from model import *
 class PrettyPrinter(ASTNodeVisitor):
     def __init__(self):
         self.out = ''
+        self.indent = 0
+
+    def add_indent(self):
+        self.out += '    ' * self.indent
+
+    def add_statements(self, statements):
+        self.out += '{\n'
+        self.indent += 1
+        if statements:
+            for stmt in statements:
+                self.add_indent()
+                stmt.accept(self)
+                self.out += ';\n'
+        self.indent -= 1
+        self.add_indent()
+        self.out += '}'
 
     def visit_number(self, number):
         self.out += str(number.value)
@@ -15,7 +31,13 @@ class PrettyPrinter(ASTNodeVisitor):
         pass
 
     def visit_conditional(self, conditional):
-        pass
+        self.out += 'if ('
+        conditional.condition.accept(self)
+        self.out += ') '
+        self.add_statements(conditional.if_true)
+        if conditional.if_false:
+            self.out += ' else '
+            self.add_statements(conditional.if_false)
 
     def visit_print(self, print_):
         pass
