@@ -58,3 +58,8 @@ class ConstantFolder():
         if isinstance(expr, Number):
             return UnaryOperation(op, expr).evaluate(s)
         return UnaryOperation(op, expr)
+
+
+def fold_constants(program):
+    folder = ConstantFolder()
+    return program.accept(folder)

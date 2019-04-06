@@ -1,5 +1,6 @@
 import pytest
 from folder import *
+from printer import *
 
 
 def test_num_x_num():
@@ -35,6 +36,27 @@ def test_ref_x_ref():
     bi = BinaryOperation(Reference('a'), '-', Reference('a'))
     got = bi.accept(folder)
     assert got == Number(0)
+
+
+def test_all():
+    bi = BinaryOperation(
+        Number(10),
+        '-',
+        UnaryOperation(
+            '-',
+            BinaryOperation(
+                Number(3),
+                '+',
+                BinaryOperation(
+                    Reference('x'),
+                    '-',
+                    Reference('x')
+                )
+            )
+        )
+    )
+    got = fold_constants(bi)
+    assert got == Number(13)
 
 
 if __name__ == "__main__":
