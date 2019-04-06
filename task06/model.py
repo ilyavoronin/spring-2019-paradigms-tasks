@@ -344,4 +344,4 @@ class UnaryOperation(ASTNode):
         return Number(int(UnaryOperation.OPERATORS[self.op](res)))
 
     def accept(self, visitor):
-        visitor.visit_unary_operation(self)
+        return visitor.visit_unary_operation(self)
