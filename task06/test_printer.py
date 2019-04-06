@@ -59,5 +59,21 @@ def test_visit_reference():
     assert printer.out == 'aaa;'
 
 
+def test_unary_operation():
+    printer = PrettyPrinter()
+    uop = UnaryOperation('-', Number(5))
+    uop.accept(printer)
+    assert eval(printer.out) == -5
+
+
+def test_visit_binary_operation():
+    printer = PrettyPrinter()
+    add1 = BinaryOperation(Number(2), '+', Number(3))
+    add2 = BinaryOperation(UnaryOperation('-', Number(4)), '+', Number(5))
+    mul = BinaryOperation(add1, '*', add2)
+    mul.accept(printer)
+    assert eval(printer.out) == 5
+
+
 if __name__ == "__main__":
     pytest.main(args=['-vv'])

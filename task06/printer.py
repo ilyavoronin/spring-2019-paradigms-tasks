@@ -56,10 +56,15 @@ class PrettyPrinter(ASTNodeVisitor):
         self.out += reference.name + ';'
 
     def visit_binary_operation(self, binary_operation):
-        pass
+        self.out += '('
+        binary_operation.lhs.accept(self)
+        self.out += ') ' + binary_operation.op + ' ('
+        binary_operation.rhs.accept(self)
+        self.out += ')'
 
     def visit_unary_operation(self, unary_operation):
-        pass
+        self.out += unary_operation.op
+        unary_operation.expr.accept(self)
 
     def print(self):
         print(self.out + ';')
