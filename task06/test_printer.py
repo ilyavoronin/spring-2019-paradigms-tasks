@@ -26,5 +26,17 @@ def test_print_conditional():
         '}'
 
 
+def test_function_definition():
+    printer = PrettyPrinter()
+    func = Function(['a', 'b'], [Number(12), Number(13)])
+    func_def = FunctionDefinition('func', func)
+    func_def.accept(printer)
+    assert printer.out == \
+        'def func(a, b) {\n' + \
+        '    12;\n' + \
+        '    13;\n' + \
+        '}'
+
+
 if __name__ == "__main__":
     pytest.main(args=['-vv'])

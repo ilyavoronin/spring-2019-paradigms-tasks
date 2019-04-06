@@ -28,7 +28,9 @@ class PrettyPrinter(ASTNodeVisitor):
         pass
 
     def visit_function_definition(self, function_definition):
-        pass
+        self.out += 'def ' + function_definition.name + '('
+        self.out += ', '.join(function_definition.function.args) + ') '
+        self.add_statements(function_definition.function.body)
 
     def visit_conditional(self, conditional):
         self.out += 'if ('
