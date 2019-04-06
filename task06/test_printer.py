@@ -52,5 +52,12 @@ def test_visit_read():
     assert printer.out == 'read aaa;'
 
 
+def test_visit_reference():
+    printer = PrettyPrinter()
+    ref = Reference('aaa')
+    ref.accept(printer)
+    assert printer.out == 'aaa;'
+
+
 if __name__ == "__main__":
     pytest.main(args=['-vv'])

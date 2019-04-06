@@ -53,7 +53,7 @@ class PrettyPrinter(ASTNodeVisitor):
         pass
 
     def visit_reference(self, reference):
-        pass
+        self.out += reference.name + ';'
 
     def visit_binary_operation(self, binary_operation):
         pass
