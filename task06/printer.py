@@ -44,16 +44,21 @@ class PrettyPrinter(ASTNodeVisitor):
     def visit_print(self, print_):
         self.out += 'print '
         print_.expr.accept(self)
-        self.out += ';'
 
     def visit_read(self, read):
-        self.out += 'read ' + read.name + ';'
+        self.out += 'read ' + read.name
 
     def visit_function_call(self, function_call):
-        pass
+        function_call.fun_expr.accept(self)
+        self.out += '('
+        for i in range(len(function_call.args)):
+            function_call.args[i].accept(self)
+            if i < len(function_call.args) - 1:
+                self.out += ', '
+        self.out += ')'
 
     def visit_reference(self, reference):
-        self.out += reference.name + ';'
+        self.out += reference.name
 
     def visit_binary_operation(self, binary_operation):
         self.out += '('

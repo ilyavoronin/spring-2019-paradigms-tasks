@@ -42,21 +42,21 @@ def test_visit_print():
     printer = PrettyPrinter()
     print_ = Print(Number(42))
     print_.accept(printer)
-    assert printer.out == 'print 42;'
+    assert printer.out == 'print 42'
 
 
 def test_visit_read():
     printer = PrettyPrinter()
     read = Read("aaa")
     read.accept(printer)
-    assert printer.out == 'read aaa;'
+    assert printer.out == 'read aaa'
 
 
 def test_visit_reference():
     printer = PrettyPrinter()
     ref = Reference('aaa')
     ref.accept(printer)
-    assert printer.out == 'aaa;'
+    assert printer.out == 'aaa'
 
 
 def test_unary_operation():
@@ -73,6 +73,14 @@ def test_visit_binary_operation():
     mul = BinaryOperation(add1, '*', add2)
     mul.accept(printer)
     assert eval(printer.out) == 5
+
+
+def test_function_call():
+    printer = PrettyPrinter()
+    func_call1 = FunctionCall(Reference('f1'), [Number(10), Number(11)])
+    func_call2 = FunctionCall(Reference('f2'), [Number(12), func_call1])
+    func_call2.accept(printer)
+    assert printer.out == 'f2(12, f1(10, 11))'
 
 
 if __name__ == "__main__":
