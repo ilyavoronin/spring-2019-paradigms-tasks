@@ -117,7 +117,7 @@ def test_all(capsys):
                 if (1) {
                 }
             } else {
-                exit(-arg1);
+                exit(-(arg1));
             }
         }
         '''

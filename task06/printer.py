@@ -77,8 +77,9 @@ class PrettyPrinter(ASTNodeVisitor):
         self.out += ')'
 
     def visit_unary_operation(self, unary_operation):
-        self.out += unary_operation.op
+        self.out += unary_operation.op + '('
         unary_operation.expr.accept(self)
+        self.out += ')'
 
 
 def pretty_print(program):
