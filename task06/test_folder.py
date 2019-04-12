@@ -38,25 +38,36 @@ def test_ref_x_ref():
     assert got == Number(0)
 
 
+def test_conditional_none():
+    folder = ConstantFolder()
+    cond = Conditional(Number(1), None, None)
+    got = cond.accept(folder)
+    return got == cond
+
+
 def test_all():
-    bi = BinaryOperation(
-        Number(10),
-        '-',
-        UnaryOperation(
+    bi = Conditional(
+        BinaryOperation(
+            Number(10),
             '-',
-            BinaryOperation(
-                Number(3),
-                '+',
+            UnaryOperation(
+                '-',
                 BinaryOperation(
-                    Reference('x'),
-                    '-',
-                    Reference('x')
+                    Number(3),
+                    '+',
+                    BinaryOperation(
+                        Reference('x'),
+                        '-',
+                        Reference('x')
+                    )
                 )
             )
-        )
+        ), [BinaryOperation(Number(0), '*',  Reference('dsdsd'))],
+        [UnaryOperation('-', Number(10))]
     )
     got = fold_constants(bi)
-    assert got == Number(13)
+    assert got.condition == Number(13) and got.if_true == [
+        Number(0)] and got.if_false == [Number(-10)]
 
 
 if __name__ == "__main__":

@@ -3,7 +3,7 @@ from model import *
 
 class ConstantFolder(ASTNodeVisitor):
     def visit_number(self, number):
-        return Number(number.value)
+        return number
 
     def visit_function(self, function):
         return Function(function.args,
@@ -16,14 +16,14 @@ class ConstantFolder(ASTNodeVisitor):
     def visit_conditional(self, conditional):
         return Conditional(
             conditional.condition.accept(self),
-            [stmt.accept(self) for stmt in conditional.if_true],
-            [stmt.accept(self) for stmt in conditional.if_false])
+            [stmt.accept(self) for stmt in conditional.if_true or []],
+            [stmt.accept(self) for stmt in conditional.if_false or []])
 
     def visit_print(self, print_):
         return Print(print_.expr.accept(self))
 
     def visit_read(self, read):
-        return Read(read.name)
+        return read
 
     def visit_function_call(self, function_call):
         return FunctionCall(
@@ -31,14 +31,14 @@ class ConstantFolder(ASTNodeVisitor):
                [stmt.accept(self) for stmt in function_call.args])
 
     def visit_reference(self, reference):
-        return Reference(reference.name)
+        return reference
 
     def visit_binary_operation(self, binary_operation):
         lhs = binary_operation.lhs.accept(self)
         op = binary_operation.op
         rhs = binary_operation.rhs.accept(self)
-        s = Scope()
         if isinstance(lhs, Number) and isinstance(rhs, Number):
+            s = Scope()
             return BinaryOperation(lhs, op, rhs).evaluate(s)
         if (isinstance(lhs, Number) and lhs.value == 0 and
                 isinstance(rhs, Reference) and op == '*'):
@@ -54,8 +54,8 @@ class ConstantFolder(ASTNodeVisitor):
     def visit_unary_operation(self, unary_operation):
         expr = unary_operation.expr.accept(self)
         op = unary_operation.op
-        s = Scope()
         if isinstance(expr, Number):
+            s = Scope()
             return UnaryOperation(op, expr).evaluate(s)
         return UnaryOperation(op, expr)
 
