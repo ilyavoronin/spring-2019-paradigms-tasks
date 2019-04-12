@@ -7,10 +7,16 @@ class PrettyPrinter(ASTNodeVisitor):
         self.indent = 0
 
     def get_out(self):
-        return self.out + ';'
+        self.new_line()
+        return self.out
 
     def add_indent(self):
         self.out += '    ' * self.indent
+
+    def new_line(self):
+        if self.out[-1] != '}':
+            self.out += ';'
+        self.out += '\n'
 
     def add_statements(self, statements):
         self.out += '{\n'
@@ -19,7 +25,7 @@ class PrettyPrinter(ASTNodeVisitor):
             for stmt in statements:
                 self.add_indent()
                 stmt.accept(self)
-                self.out += ';\n'
+                self.new_line()
         self.indent -= 1
         self.add_indent()
         self.out += '}'
@@ -78,4 +84,4 @@ class PrettyPrinter(ASTNodeVisitor):
 def pretty_print(program):
     printer = PrettyPrinter()
     program.accept(printer)
-    print(printer.get_out())
+    print(printer.get_out(), end='')

@@ -1,7 +1,7 @@
 from model import *
 
 
-class ConstantFolder():
+class ConstantFolder(ASTNodeVisitor):
     def visit_number(self, number):
         return Number(number.value)
 

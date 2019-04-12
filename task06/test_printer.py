@@ -19,7 +19,7 @@ def test_visit_conditional():
         '    if (1) {\n' + \
         '        10;\n' + \
         '        11;\n' + \
-        '    };\n' + \
+        '    }\n' + \
         '    12;\n' + \
         '} else {\n' + \
         '    13;\n' + \
@@ -100,17 +100,18 @@ def test_all(capsys):
         ),
     ])))
     out = capsys.readouterr().out
+    print(out)
     assert out == \
         'def main(arg1) {\n' + \
         '    read x;\n' + \
         '    print x;\n' + \
         '    if ((2) == (3)) {\n' + \
         '        if (1) {\n' + \
-        '        };\n' + \
+        '        }\n' + \
         '    } else {\n' + \
         '        exit(-arg1);\n' + \
-        '    };\n' + \
-        '};\n'
+        '    }\n' + \
+        '}\n'
 
 
 if __name__ == "__main__":
