@@ -18,10 +18,9 @@ class PrettyPrinter(ASTNodeVisitor):
     def add_block(self, statements):
         res = '{\n'
         self.indent += 1
-        if statements:
-            for stmt in statements:
-                res += self.add_indent() + stmt.accept(self)
-                res += self.new_line(res[-1])
+        for stmt in statements or []:
+            res += self.add_indent() + stmt.accept(self)
+            res += self.new_line(res[-1])
         self.indent -= 1
         res += self.add_indent() + '}'
         return res
