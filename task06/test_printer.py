@@ -48,7 +48,7 @@ def test_visit_print():
 
 def test_visit_read():
     printer = PrettyPrinter()
-    read = Read("aaa")
+    read = Read('aaa')
     assert read.accept(printer) == 'read aaa'
 
 
@@ -119,5 +119,5 @@ def test_all(capsys):
     )
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     pytest.main(args=['-vv'])

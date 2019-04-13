@@ -15,7 +15,7 @@ class PrettyPrinter(ASTNodeVisitor):
             res += ';'
         return res + '\n'
 
-    def add_statements(self, statements):
+    def add_block(self, statements):
         res = '{\n'
         self.indent += 1
         if statements:
@@ -35,13 +35,13 @@ class PrettyPrinter(ASTNodeVisitor):
     def visit_function_definition(self, function_definition):
         return 'def ' + function_definition.name + '(' +\
             ', '.join(function_definition.function.args) + ') ' + \
-            self.add_statements(function_definition.function.body)
+            self.add_block(function_definition.function.body)
 
     def visit_conditional(self, conditional):
         res = 'if (' + conditional.condition.accept(self) + ') '
-        res += self.add_statements(conditional.if_true)
+        res += self.add_block(conditional.if_true)
         if conditional.if_false:
-            res += ' else ' + self.add_statements(conditional.if_false)
+            res += ' else ' + self.add_block(conditional.if_false)
         return res
 
     def visit_print(self, print_):
@@ -52,10 +52,10 @@ class PrettyPrinter(ASTNodeVisitor):
 
     def visit_function_call(self, function_call):
         res = function_call.fun_expr.accept(self) + '('
-        for i in range(len(function_call.args)):
-            res += function_call.args[i].accept(self)
-            if i < len(function_call.args) - 1:
+        for i, arg in enumerate(function_call.args):
+            if i != 0:
                 res += ', '
+            res += arg.accept(self)
         return res + ')'
 
     def visit_reference(self, reference):
@@ -67,7 +67,8 @@ class PrettyPrinter(ASTNodeVisitor):
                binary_operation.rhs.accept(self) + ')'
 
     def visit_unary_operation(self, unary_operation):
-        return unary_operation.op + '(' + unary_operation.expr.accept(self) + ')'
+        return unary_operation.op + '(' +\
+               unary_operation.expr.accept(self) + ')'
 
 
 def pretty_print(program):

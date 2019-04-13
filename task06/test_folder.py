@@ -70,5 +70,5 @@ def test_all():
         Number(0)] and got.if_false == [Number(-10)]
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     pytest.main(args=['-vv'])
