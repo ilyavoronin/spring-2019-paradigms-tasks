@@ -59,5 +59,4 @@ class ConstantFolder(ASTNodeVisitor):
 
 
 def fold_constants(program):
-    folder = ConstantFolder()
-    return program.accept(folder)
+    return program.accept(ConstantFolder())

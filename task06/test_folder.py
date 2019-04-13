@@ -5,44 +5,38 @@ import sys
 
 
 def test_mult_num_num():
-    folder = ConstantFolder()
     bi = BinaryOperation(Number(10), '*', Number(11))
-    got = bi.accept(folder)
+    got = bi.accept(ConstantFolder())
     assert got == Number(110)
 
 
 def test_unary_minus_num():
-    folder = ConstantFolder()
     un = UnaryOperation('-', Number(10))
-    got = un.accept(folder)
+    got = un.accept(ConstantFolder())
     assert got == Number(-10)
 
 
-def test_mult_ref_num():
-    folder = ConstantFolder()
+def test_mult_ref_num0():
     bi = BinaryOperation(Reference('a'), '*', Number(0))
-    got = bi.accept(folder)
+    got = bi.accept(ConstantFolder())
     assert got == Number(0)
 
 
-def test_mult_num_ref():
-    folder = ConstantFolder()
+def test_mult_num0_ref():
     bi = BinaryOperation(Number(0), '*', Reference('a'))
-    got = bi.accept(folder)
+    got = bi.accept(ConstantFolder())
     assert got == Number(0)
 
 
 def test_subtraction_ref_ref():
-    folder = ConstantFolder()
     bi = BinaryOperation(Reference('a'), '-', Reference('a'))
-    got = bi.accept(folder)
+    got = bi.accept(ConstantFolder())
     assert got == Number(0)
 
 
 def test_conditional_none():
-    folder = ConstantFolder()
     cond = Conditional(Number(1), None, None)
-    got = cond.accept(folder)
+    got = cond.accept(ConstantFolder())
     return got == cond
 
 
