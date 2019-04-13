@@ -1,6 +1,7 @@
 import pytest
 from folder import *
 from printer import *
+import sys
 
 
 def test_num_x_num():
@@ -66,9 +67,9 @@ def test_all():
         [UnaryOperation('-', Number(10))]
     )
     got = fold_constants(bi)
-    assert got.condition == Number(13) and got.if_true == [
-        Number(0)] and got.if_false == [Number(-10)]
+    assert isinstance(got, Conditional) and got.condition == Number(13) and\
+        got.if_true == [Number(0)] and got.if_false == [Number(-10)]
 
 
 if __name__ == '__main__':
-    pytest.main(args=['-vv'])
+    pytest.main(sys.argv)

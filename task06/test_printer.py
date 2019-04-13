@@ -1,6 +1,7 @@
 import pytest
 from printer import *
 import textwrap
+import sys
 
 
 def test_visit_number():
@@ -120,4 +121,4 @@ def test_all(capsys):
 
 
 if __name__ == '__main__':
-    pytest.main(args=['-vv'])
+    pytest.main(sys.argv)
