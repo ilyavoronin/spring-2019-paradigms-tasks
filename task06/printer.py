@@ -3,86 +3,76 @@ from model import *
 
 class PrettyPrinter(ASTNodeVisitor):
     def __init__(self):
-        self.out = ''
         self.indent = 0
-
-    def get_out(self):
-        self.new_line()
-        return self.out
+        self.last = ''
 
     def add_indent(self):
-        self.out += '    ' * self.indent
+        return '    ' * self.indent
 
-    def new_line(self):
-        if self.out[-1] != '}':
-            self.out += ';'
-        self.out += '\n'
+    def new_line(self, last_c):
+        res = ''
+        if last_c != '}':
+            res += ';'
+        return res + '\n'
 
     def add_statements(self, statements):
-        self.out += '{\n'
+        res = '{\n'
         self.indent += 1
         if statements:
             for stmt in statements:
-                self.add_indent()
-                stmt.accept(self)
-                self.new_line()
+                res += self.add_indent() + stmt.accept(self)
+                res += self.new_line(res[-1])
         self.indent -= 1
-        self.add_indent()
-        self.out += '}'
+        res += self.add_indent() + '}'
+        return res
 
     def visit_number(self, number):
-        self.out += str(number.value)
+        return str(number.value)
 
     def visit_function(self, function):
-        pass
+        raise TypeError
 
     def visit_function_definition(self, function_definition):
-        self.out += 'def ' + function_definition.name + '('
-        self.out += ', '.join(function_definition.function.args) + ') '
-        self.add_statements(function_definition.function.body)
+        return 'def ' + function_definition.name + '(' +\
+            ', '.join(function_definition.function.args) + ') ' + \
+            self.add_statements(function_definition.function.body)
 
     def visit_conditional(self, conditional):
-        self.out += 'if ('
-        conditional.condition.accept(self)
-        self.out += ') '
-        self.add_statements(conditional.if_true)
+        res = 'if (' + conditional.condition.accept(self) + ') '
+        res += self.add_statements(conditional.if_true)
         if conditional.if_false:
-            self.out += ' else '
-            self.add_statements(conditional.if_false)
+            res += ' else ' + self.add_statements(conditional.if_false)
+        return res
 
     def visit_print(self, print_):
-        self.out += 'print '
-        print_.expr.accept(self)
+        return 'print ' + print_.expr.accept(self)
 
     def visit_read(self, read):
-        self.out += 'read ' + read.name
+        return 'read ' + read.name
 
     def visit_function_call(self, function_call):
-        function_call.fun_expr.accept(self)
-        self.out += '('
+        res = function_call.fun_expr.accept(self) + '('
         for i in range(len(function_call.args)):
-            function_call.args[i].accept(self)
+            res += function_call.args[i].accept(self)
             if i < len(function_call.args) - 1:
-                self.out += ', '
-        self.out += ')'
+                res += ', '
+        return res + ')'
 
     def visit_reference(self, reference):
-        self.out += reference.name
+        return reference.name
 
     def visit_binary_operation(self, binary_operation):
-        self.out += '('
-        binary_operation.lhs.accept(self)
-        self.out += ') ' + binary_operation.op + ' ('
-        binary_operation.rhs.accept(self)
-        self.out += ')'
+        return '(' + binary_operation.lhs.accept(self) + ') ' +\
+               binary_operation.op + ' (' +\
+               binary_operation.rhs.accept(self) + ')'
 
     def visit_unary_operation(self, unary_operation):
-        self.out += unary_operation.op + '('
-        unary_operation.expr.accept(self)
-        self.out += ')'
+        return unary_operation.op + '(' + unary_operation.expr.accept(self) + ')'
 
 
 def pretty_print(program):
     printer = PrettyPrinter()
-    program.accept(printer)
-    print(printer.get_out(), end='')
+    res = program.accept(printer)
+    if res[-1] != '}':
+        res += ';'
+    print(res)
