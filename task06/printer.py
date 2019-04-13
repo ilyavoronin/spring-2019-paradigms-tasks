@@ -4,23 +4,18 @@ from model import *
 class PrettyPrinter(ASTNodeVisitor):
     def __init__(self):
         self.indent = 0
-        self.last = ''
 
     def add_indent(self):
         return '    ' * self.indent
-
-    def new_line(self, last_c):
-        res = ''
-        if last_c != '}':
-            res += ';'
-        return res + '\n'
 
     def add_block(self, statements):
         res = '{\n'
         self.indent += 1
         for stmt in statements or []:
             res += self.add_indent() + stmt.accept(self)
-            res += self.new_line(res[-1])
+            if res[-1] != '}':
+                res += ';'
+            res += '\n'
         self.indent -= 1
         res += self.add_indent() + '}'
         return res

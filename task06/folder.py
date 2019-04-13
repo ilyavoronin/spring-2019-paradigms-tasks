@@ -28,7 +28,7 @@ class ConstantFolder(ASTNodeVisitor):
     def visit_function_call(self, function_call):
         return FunctionCall(
                function_call.fun_expr.accept(self),
-               [stmt.accept(self) for stmt in function_call.args])
+               [arg.accept(self) for arg in function_call.args])
 
     def visit_reference(self, reference):
         return reference
@@ -38,8 +38,7 @@ class ConstantFolder(ASTNodeVisitor):
         op = binary_operation.op
         rhs = binary_operation.rhs.accept(self)
         if isinstance(lhs, Number) and isinstance(rhs, Number):
-            s = Scope()
-            return BinaryOperation(lhs, op, rhs).evaluate(s)
+            return BinaryOperation(lhs, op, rhs).evaluate(Scope())
         if (isinstance(lhs, Number) and lhs.value == 0 and
                 isinstance(rhs, Reference) and op == '*'):
             return Number(0)
@@ -55,8 +54,7 @@ class ConstantFolder(ASTNodeVisitor):
         expr = unary_operation.expr.accept(self)
         op = unary_operation.op
         if isinstance(expr, Number):
-            s = Scope()
-            return UnaryOperation(op, expr).evaluate(s)
+            return UnaryOperation(op, expr).evaluate(Scope())
         return UnaryOperation(op, expr)
 
 
