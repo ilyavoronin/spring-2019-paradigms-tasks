@@ -61,8 +61,8 @@ def test_all():
         [UnaryOperation('-', Number(10))]
     )
     got = fold_constants(bi)
-    assert isinstance(got, Conditional) and got.condition == Number(13) and\
-        got.if_true == [Number(0)] and got.if_false == [Number(-10)]
+    assert (isinstance(got, Conditional) and got.condition == Number(13) and
+            got.if_true == [Number(0)] and got.if_false == [Number(-10)])
 
 
 if __name__ == '__main__':

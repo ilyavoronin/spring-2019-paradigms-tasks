@@ -24,7 +24,7 @@ class PrettyPrinter(ASTNodeVisitor):
         return str(number.value)
 
     def visit_function(self, function):
-        raise TypeError('Can\'t print function object')
+        raise TypeError("Can't print Function object")
 
     def visit_function_definition(self, function_definition):
         return ('def ' + function_definition.name + '(' +
