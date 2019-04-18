@@ -173,12 +173,13 @@ fn find_solution(f: &mut Field) -> Option<Field> {
 /// в противном случае возвращает `None`.
 fn find_solution_parallel(mut f: Field) -> Option<Field> {
     let (tx, rx): (Sender<Option<Field>>, Receiver<Option<Field>>) = channel();
+    let mut rx = Receiver::into_iter(rx);
     let n_threads = 8;
     let pool = ThreadPool::new(n_threads);
     pool.execute(move|| {
         tx.send(find_solution(&mut f)).unwrap();
     });
-    let result = rx.recv().unwrap();
+    let result = rx.find_map(|f| f);
     result
 }
 
