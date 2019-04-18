@@ -12,7 +12,7 @@ extern crate threadpool;
 // Чтобы не писать `field::Cell:Empty`, можно "заимпортировать" нужные вещи из модуля.
 use field::Cell::*;
 use field::{parse_field, Field, N};
-use std::sync::mpsc::{channel, Sender, Receiver};
+use std::sync::mpsc::{channel, Receiver, Sender};
 use threadpool::ThreadPool;
 
 /// Эта функция выполняет один шаг перебора в поисках решения головоломки.
@@ -168,21 +168,21 @@ fn find_solution(f: &mut Field) -> Option<Field> {
     try_extend_field(f, |f_solved| f_solved.clone(), find_solution)
 }
 
-fn spawn_tasks(pool : &ThreadPool, tx : &Sender<Option<Field>>, f: &mut Field, depth : i32) {
+fn spawn_tasks(pool: &ThreadPool, tx: &Sender<Option<Field>>, f: &mut Field, depth: i32) {
     if depth == 0 {
         let tx = tx.clone();
         let mut f = f.clone();
-        pool.execute(move|| tx.send(find_solution(&mut f)).unwrap_or(()));
-    }
-    else {
-        try_extend_field(f, 
+        pool.execute(move || tx.send(find_solution(&mut f)).unwrap_or(()));
+    } else {
+        try_extend_field(
+            f,
             |f| {
                 tx.send(Some(f.clone())).unwrap_or(());
             },
             |f| {
                 spawn_tasks(pool, tx, f, depth - 1);
                 None
-            }
+            },
         );
     }
 }
