@@ -168,18 +168,23 @@ fn find_solution(f: &mut Field) -> Option<Field> {
     try_extend_field(f, |f_solved| f_solved.clone(), find_solution)
 }
 
-fn spawn_tasks(pool : &ThreadPool, tx : &Sender<Option<Field>>, f: &mut Field) {
-    try_extend_field(f, 
-        |f| {
-            tx.send(Some(f.clone())).unwrap_or(());
-        },
-        |f| {
-            let tx = tx.clone();
-            let mut f = f.clone();
-            pool.execute(move|| tx.send(find_solution(&mut f)).unwrap_or(()));
-            None
-        }
-    );
+fn spawn_tasks(pool : &ThreadPool, tx : &Sender<Option<Field>>, f: &mut Field, depth : i32) {
+    if depth == 0 {
+        let tx = tx.clone();
+        let mut f = f.clone();
+        pool.execute(move|| tx.send(find_solution(&mut f)).unwrap_or(()));
+    }
+    else {
+        try_extend_field(f, 
+            |f| {
+                tx.send(Some(f.clone())).unwrap_or(());
+            },
+            |f| {
+                spawn_tasks(pool, tx, f, depth - 1);
+                None
+            }
+        );
+    }
 }
 
 /// Перебирает все возможные решения головоломки, заданной параметром `f`, в несколько потоков.
@@ -187,10 +192,11 @@ fn spawn_tasks(pool : &ThreadPool, tx : &Sender<Option<Field>>, f: &mut Field) {
 /// в противном случае возвращает `None`.
 fn find_solution_parallel(mut f: Field) -> Option<Field> {
     let (tx, rx): (Sender<Option<Field>>, Receiver<Option<Field>>) = channel();
+    const SPAWN_DEPTH: i32 = 2;
     let mut rx = Receiver::into_iter(rx);
     let n_threads = 8;
     let pool = ThreadPool::new(n_threads);
-    spawn_tasks(&pool, &tx, &mut f);
+    spawn_tasks(&pool, &tx, &mut f, SPAWN_DEPTH);
     std::mem::drop(tx);
     let result = rx.find_map(|f| f);
     result
