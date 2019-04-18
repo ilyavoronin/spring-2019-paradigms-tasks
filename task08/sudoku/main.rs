@@ -168,15 +168,8 @@ fn find_solution(f: &mut Field) -> Option<Field> {
     try_extend_field(f, |f_solved| f_solved.clone(), find_solution)
 }
 
-/// Перебирает все возможные решения головоломки, заданной параметром `f`, в несколько потоков.
-/// Если хотя бы одно решение `s` существует, возвращает `Some(s)`,
-/// в противном случае возвращает `None`.
-fn find_solution_parallel(mut f: Field) -> Option<Field> {
-    let (tx, rx): (Sender<Option<Field>>, Receiver<Option<Field>>) = channel();
-    let mut rx = Receiver::into_iter(rx);
-    let n_threads = 8;
-    let pool = ThreadPool::new(n_threads);
-    try_extend_field(& mut f, 
+fn spawn_tasks(pool : &ThreadPool, tx : &Sender<Option<Field>>, f: &mut Field) {
+    try_extend_field(f, 
         |f| {
             tx.send(Some(f.clone())).unwrap_or(());
         },
@@ -187,6 +180,17 @@ fn find_solution_parallel(mut f: Field) -> Option<Field> {
             None
         }
     );
+}
+
+/// Перебирает все возможные решения головоломки, заданной параметром `f`, в несколько потоков.
+/// Если хотя бы одно решение `s` существует, возвращает `Some(s)`,
+/// в противном случае возвращает `None`.
+fn find_solution_parallel(mut f: Field) -> Option<Field> {
+    let (tx, rx): (Sender<Option<Field>>, Receiver<Option<Field>>) = channel();
+    let mut rx = Receiver::into_iter(rx);
+    let n_threads = 8;
+    let pool = ThreadPool::new(n_threads);
+    spawn_tasks(&pool, &tx, &mut f);
     std::mem::drop(tx);
     let result = rx.find_map(|f| f);
     result
