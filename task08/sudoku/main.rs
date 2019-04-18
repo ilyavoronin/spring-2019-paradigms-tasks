@@ -176,9 +176,18 @@ fn find_solution_parallel(mut f: Field) -> Option<Field> {
     let mut rx = Receiver::into_iter(rx);
     let n_threads = 8;
     let pool = ThreadPool::new(n_threads);
-    pool.execute(move|| {
-        tx.send(find_solution(&mut f)).unwrap();
-    });
+    try_extend_field(& mut f, 
+        |f| {
+            tx.send(Some(f.clone())).unwrap_or(());
+        },
+        |f| {
+            let tx = tx.clone();
+            let mut f = f.clone();
+            pool.execute(move|| tx.send(find_solution(&mut f)).unwrap_or(()));
+            None
+        }
+    );
+    std::mem::drop(tx);
     let result = rx.find_map(|f| f);
     result
 }
