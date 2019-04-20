@@ -193,13 +193,11 @@ fn spawn_tasks(pool: &ThreadPool, tx: &Sender<Option<Field>>, f: &mut Field, dep
 fn find_solution_parallel(mut f: Field) -> Option<Field> {
     let (tx, rx): (Sender<Option<Field>>, Receiver<Option<Field>>) = channel();
     const SPAWN_DEPTH: i32 = 2;
-    let mut rx = Receiver::into_iter(rx);
     let n_threads = 8;
     let pool = ThreadPool::new(n_threads);
     spawn_tasks(&pool, &tx, &mut f, SPAWN_DEPTH);
     std::mem::drop(tx);
-    let result = rx.find_map(|f| f);
-    result
+    rx.into_iter().find_map(|option_f| option_f)
 }
 
 /// Юнит-тест, проверяющий, что `find_solution()` находит лексикографически минимальное решение на пустом поле.
