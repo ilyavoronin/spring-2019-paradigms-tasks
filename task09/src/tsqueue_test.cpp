@@ -46,8 +46,8 @@ TEST_CASE("ThreadsafeQueue multithreaded ping-pong") {
         for (int i = 0; i < PING_PONGS; i++) {
             int old_a = a;
             threadsafe_queue_push(&qs[0], &a);
-            CHECK(&a == threadsafe_queue_wait_and_pop(&qs[1]));
-            CHECK(old_a + 1 == a);
+            CHECK(threadsafe_queue_wait_and_pop(&qs[1]) == &a);
+            CHECK(a == old_a + 1);
         }
         return nullptr;
     };
