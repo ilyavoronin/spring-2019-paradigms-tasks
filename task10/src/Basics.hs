@@ -38,7 +38,8 @@ filter' f list | (f (head' list)) = (head' list):(filter' f (tail' list))
 -- foldl'' (+) 0 [1, 2, 3] == (((0 + 1) + 2) + 3)
 -- foldl'' (*) 4 [] == 4
 foldl'' :: (a -> b -> a) -> a -> [b] -> a
-foldl'' f z l = undefined
+foldl'' f z [] = z
+foldl'' f z l = foldl'' f (f z (head' l)) (tail' l)
 
 -- 7. concat' принимает на вход два списка и возвращает их конкатенацию
 -- concat' [1,2] [3] == [1,2,3]
