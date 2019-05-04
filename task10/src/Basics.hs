@@ -44,7 +44,8 @@ foldl'' f z l = foldl'' f (f z (head' l)) (tail' l)
 -- 7. concat' принимает на вход два списка и возвращает их конкатенацию
 -- concat' [1,2] [3] == [1,2,3]
 concat' :: [a] -> [a] -> [a]
-concat' = undefined
+concat' [] list2 = list2
+concat' list1 list2 = (head' list1):(concat' (tail' list1) list2)
 
 -- 8. quickSort' возвращает его отсортированный список
 -- quickSort' должен быть реализован через алгоритм QuickSort
