@@ -29,7 +29,9 @@ drop' n list = drop' (n - 1) (tail' list)
 
 -- 5. filter' возвращает список из элементов, для которых f возвращает True
 filter' :: (a -> Bool) -> [a] -> [a]
-filter' f xs = undefined
+filter' f [] = []
+filter' f list | (f (head' list)) = (head' list):(filter' f (tail' list))
+               | otherwise     = filter' f (tail' list)
 
 -- 6. foldl'' последовательно применяет функцию f к элементу списка l и значению,
 -- полученному на предыдущем шаге, начальное значение
