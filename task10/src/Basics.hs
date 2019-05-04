@@ -9,15 +9,17 @@ import Prelude hiding (head, tail, take, drop, filter, foldl, concat, (++))
 
 -- 1. head' возвращает первый элемент непустого списка
 head' :: [a] -> a
-head' = undefined
+head' (x:list) = x
 
 -- 2. tail' возвращает список без первого элемента, для пустого - пустой
 tail' :: [a] -> [a]
-tail' = undefined
+tail' [] = []
+tail' (list:x) = x
 
 -- 3. take' возвращает первые n >= 0 элементов исходного списка
 take' :: Int -> [a] -> [a]
-take' = undefined
+take' 0 _ = []
+take' n list = (head' list):(take' (n - 1) (tail' list))
 
 -- 4. drop' возвращает список без первых n >= 0 элементов; если n больше длины
 -- списка, то пустой список.
