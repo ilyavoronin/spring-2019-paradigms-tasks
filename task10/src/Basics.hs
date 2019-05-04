@@ -24,7 +24,8 @@ take' n list = (head' list):(take' (n - 1) (tail' list))
 -- 4. drop' возвращает список без первых n >= 0 элементов; если n больше длины
 -- списка, то пустой список.
 drop' :: Int -> [a] -> [a]
-drop' = undefined
+drop' 0 list = list
+drop' n list = drop' (n - 1) (tail' list)
 
 -- 5. filter' возвращает список из элементов, для которых f возвращает True
 filter' :: (a -> Bool) -> [a] -> [a]
