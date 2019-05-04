@@ -51,4 +51,5 @@ concat' list1 list2 = (head' list1):(concat' (tail' list1) list2)
 -- quickSort' должен быть реализован через алгоритм QuickSort
 -- (выбор pivot может быть любым)
 quickSort' :: Ord a => [a] -> [a]
-quickSort' = undefined
+quickSort' [] = []
+quickSort' list = concat' (concat' (quickSort' (filter' ((head' list)>) list)) (filter' ((head' list)==) list)) (quickSort' (filter' ((head' list)<) list))
