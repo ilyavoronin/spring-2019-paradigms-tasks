@@ -35,13 +35,13 @@ getHealth (_, _, myHealth) = myHealth
 -- состояние робота
 
 setName :: Name -> Robot -> Robot
-setName newName (myName, myAttack, myHealth) = (newName, myAttack, myHealth)
+setName newName (_, myAttack, myHealth) = (newName, myAttack, myHealth)
 
 setAttack :: Attack -> Robot -> Robot
-setAttack newAttack (myName, myAttack, myHealth) = (myName, newAttack, myHealth)
+setAttack newAttack (myName, _, myHealth) = (myName, newAttack, myHealth)
 
 setHealth :: Health -> Robot -> Robot
-setHealth newHealth (myName, myAttack, myHealth) = (myName, myAttack, newHealth)
+setHealth newHealth (myName, myAttack, _) = (myName, myAttack, newHealth)
 
 -- Шаг 2.
 -- Напишите функцию, которая ведет себя как __str__
@@ -89,9 +89,13 @@ fight attacker defender | isAlive attacker = damage defender (getAttack attacker
 -- Если же так вышло, что после трех раундов у обоих роботов одинаковый уровень жизни, то
 -- победителем считается тот, кто ударял первым(то есть атакующий робот)
 threeRoundFight :: Robot -> Robot -> Robot
-threeRoundFight attacker defender = getWinner (fightNRounds 6 attacker defender)
-getWinner (attacker, defender) | ((getHealth attacker) >= (getHealth defender)) = attacker
-                               | otherwise                                      = defender
+threeRoundFight attacker defender = getWinner (fightNRounds 3 attacker defender)
+
+getWinner :: (Robot, Robot) -> Robot
+getWinner (attacker, defender) | ((getHealth attacker) > (getHealth defender)) = attacker
+                               | otherwise                                     = defender
+
+fightNRounds :: Int -> Robot -> Robot -> (Robot, Robot)
 fightNRounds 0 attacker defender = (attacker, defender)
 fightNRounds n attacker defender = fightNRounds (n - 1) (fight attacker defender) attacker
 

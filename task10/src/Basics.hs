@@ -9,12 +9,12 @@ import Prelude hiding (head, tail, take, drop, filter, foldl, concat, (++))
 
 -- 1. head' возвращает первый элемент непустого списка
 head' :: [a] -> a
-head' (x:list) = x
+head' (x:_) = x
 
 -- 2. tail' возвращает список без первого элемента, для пустого - пустой
 tail' :: [a] -> [a]
 tail' [] = []
-tail' (x:list) = list
+tail' (_:list) = list
 
 -- 3. take' возвращает первые n >= 0 элементов исходного списка
 take' :: Int -> [a] -> [a]
@@ -29,8 +29,8 @@ drop' n list = drop' (n - 1) (tail' list)
 
 -- 5. filter' возвращает список из элементов, для которых f возвращает True
 filter' :: (a -> Bool) -> [a] -> [a]
-filter' f [] = []
-filter' f list | (f (head' list)) = (head' list):(filter' f (tail' list))
+filter' _ [] = []
+filter' f list | f (head' list) = (head' list):(filter' f (tail' list))
                | otherwise     = filter' f (tail' list)
 
 -- 6. foldl'' последовательно применяет функцию f к элементу списка l и значению,
@@ -38,7 +38,7 @@ filter' f list | (f (head' list)) = (head' list):(filter' f (tail' list))
 -- foldl'' (+) 0 [1, 2, 3] == (((0 + 1) + 2) + 3)
 -- foldl'' (*) 4 [] == 4
 foldl'' :: (a -> b -> a) -> a -> [b] -> a
-foldl'' f z [] = z
+foldl'' _ z [] = z
 foldl'' f z l = foldl'' f (f z (head' l)) (tail' l)
 
 -- 7. concat' принимает на вход два списка и возвращает их конкатенацию
