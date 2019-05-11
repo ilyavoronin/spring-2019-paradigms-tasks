@@ -41,8 +41,17 @@ testsBasics = testGroup "Unit tests for Basics tasks"
     , testCase "foldl'' can be used for finding sum of elements" $
         foldl'' (+) 0 [1,2,3] @?= 6
 
+    , testCase "foldl'' works with nonassociative operation" $
+        foldl'' (-) 0 [1,2,3] @?= -6
+
     , testCase "concat' works on finite lists as expected" $
         concat' [1,2,3] [4,5,6] @?= [1..6]
+
+    , testCase "concat' works on infinite lists as expected" $
+        take' 10 (concat' [1,2..] [4,6..]) @?= take' 10 [1,2..]
+
+    , testCase "concat' works on finite and infinite lists as expected" $
+        take' 10 (concat' [1,2,3] [4,5..]) @?= take' 10 [1,2..]
 
     , testCase "quickSort actualy sorts the list" $
         quickSort' [5,2,3,4,1] @?= [1..5]
