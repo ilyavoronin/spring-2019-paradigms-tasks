@@ -35,13 +35,13 @@ getHealth (_, _, myHealth) = myHealth
 -- состояние робота
 
 setName :: Name -> Robot -> Robot
-setName newName (_, myAttack, myHealth) = (newName, myAttack, myHealth)
+setName newName (_, myAttack, myHealth) = robot newName myAttack myHealth
 
 setAttack :: Attack -> Robot -> Robot
-setAttack newAttack (myName, _, myHealth) = (myName, newAttack, myHealth)
+setAttack newAttack (myName, _, myHealth) = robot myName newAttack myHealth
 
 setHealth :: Health -> Robot -> Robot
-setHealth newHealth (myName, myAttack, _) = (myName, myAttack, newHealth)
+setHealth newHealth (myName, myAttack, _) = robot myName myAttack newHealth
 
 -- Шаг 2.
 -- Напишите функцию, которая ведет себя как __str__
@@ -65,7 +65,7 @@ damage victim amount = let
 -- Вам понадобится вспомогательная функция isAlive, которая бы проверяла, жив робот или не очень
 -- Робот считается живым, если его уровень здоровья строго больше нуля.
 isAlive :: Robot -> Bool
-isAlive (_, _, myHealth) = (myHealth > 0)
+isAlive r = (getHealth r) > 0
 
 -- Затем, используя функцию damage, напишите функцию, которая моделирует один раунд схватки между
 -- двумя роботами
@@ -91,13 +91,16 @@ fight attacker defender | isAlive attacker = damage defender (getAttack attacker
 threeRoundFight :: Robot -> Robot -> Robot
 threeRoundFight attacker defender = getWinner (fightNRounds 3 attacker defender)
 
+invertPair :: (a, b) -> (b, a)
+invertPair (a, b) = (b, a)
+
 getWinner :: (Robot, Robot) -> Robot
-getWinner (attacker, defender) | ((getHealth attacker) > (getHealth defender)) = attacker
-                               | otherwise                                     = defender
+getWinner (attacker, defender) | ((getHealth attacker) >= (getHealth defender)) = attacker
+                               | otherwise                                      = defender
 
 fightNRounds :: Int -> Robot -> Robot -> (Robot, Robot)
 fightNRounds 0 attacker defender = (attacker, defender)
-fightNRounds n attacker defender = fightNRounds (n - 1) (fight attacker defender) attacker
+fightNRounds n attacker defender = invertPair (fightNRounds (n - 1) (fight attacker defender) attacker)
 
 -- Шаг 4.
 -- Создайте список из трех роботов(Абсолютно любых, но лучше живых, мы собираемся их побить)
