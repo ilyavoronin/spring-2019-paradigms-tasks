@@ -1,4 +1,5 @@
 module Robots where
+import Data.Tuple
 
 -- Во второй части этого домашнего задания вам предстоит промоделировать битвы роботов
 -- Цель этой части показать, как моделировать концепции из объектно-ориентированного
@@ -51,7 +52,7 @@ setHealth newHealth (myName, myAttack, _) = robot myName myAttack newHealth
 -- > "Marvin, attack: 100, health: 500"
 
 printRobot :: Robot -> String
-printRobot (myName, myAttack, myHealth) = myName ++ ", attack: " ++ (show myAttack) ++ ", health: " ++ (show myHealth)
+printRobot (myName, myAttack, myHealth) = myName ++ ", attack: " ++ show myAttack ++ ", health: " ++ show myHealth
 
 -- Давайте теперь научим роботов драться друг с другом
 -- Напишем функцию damage которая причиняет роботу урон
@@ -89,18 +90,16 @@ fight attacker defender | isAlive attacker = damage defender (getAttack attacker
 -- Если же так вышло, что после трех раундов у обоих роботов одинаковый уровень жизни, то
 -- победителем считается тот, кто ударял первым(то есть атакующий робот)
 threeRoundFight :: Robot -> Robot -> Robot
-threeRoundFight attacker defender = getWinner (fightNRounds 3 attacker defender)
+threeRoundFight attacker defender = getWinner $ fightNRounds 3 attacker defender
 
-invertPair :: (a, b) -> (b, a)
-invertPair (a, b) = (b, a)
 
 getWinner :: (Robot, Robot) -> Robot
-getWinner (attacker, defender) | ((getHealth attacker) >= (getHealth defender)) = attacker
-                               | otherwise                                      = defender
+getWinner (attacker, defender) | (getHealth attacker) >= (getHealth defender) = attacker
+                               | otherwise                                    = defender
 
 fightNRounds :: Int -> Robot -> Robot -> (Robot, Robot)
 fightNRounds 0 attacker defender = (attacker, defender)
-fightNRounds n attacker defender = invertPair (fightNRounds (n - 1) (fight attacker defender) attacker)
+fightNRounds n attacker defender = swap $ fightNRounds (n - 1) (fight attacker defender) attacker
 
 -- Шаг 4.
 -- Создайте список из трех роботов(Абсолютно любых, но лучше живых, мы собираемся их побить)

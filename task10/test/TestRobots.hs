@@ -46,9 +46,6 @@ testsRobots = let
         , testCase "Test for fight" $
             fight walter peter @?= robot "Peter" 30 60
 
-        , testCase "Test for invertPair" $
-            invertPair (1, 2) @?= (2, 1)
-
         , testCase "Test for getWinner" $
             getWinner (steven, peter) @?= steven
 
