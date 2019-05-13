@@ -59,5 +59,5 @@ testsRobots = let
             threeRoundFight walter peter @?= robot "Walter" 40 20
 
         , testCase "Test for survivors" $
-            survivors @?= [("a",100,600)]
+            survivors @?= [robot "a" 100 600]
         ]

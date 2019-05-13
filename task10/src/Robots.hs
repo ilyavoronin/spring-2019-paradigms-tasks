@@ -94,8 +94,8 @@ threeRoundFight attacker defender = getWinner $ fightNRounds 3 attacker defender
 
 
 getWinner :: (Robot, Robot) -> Robot
-getWinner (attacker, defender) | (getHealth attacker) >= (getHealth defender) = attacker
-                               | otherwise                                    = defender
+getWinner (attacker, defender) | getHealth attacker >= getHealth defender = attacker
+                               | otherwise                                = defender
 
 fightNRounds :: Int -> Robot -> Robot -> (Robot, Robot)
 fightNRounds 0 attacker defender = (attacker, defender)
