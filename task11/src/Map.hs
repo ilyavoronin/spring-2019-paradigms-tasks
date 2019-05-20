@@ -31,18 +31,18 @@ class Map t where
     singleton :: k -> a -> t k a
 
     fromList :: Ord k => [(k, a)] -> t k a
-    fromList = undefined {- insert -}
+    fromList = foldl (flip (uncurry insert)) empty
 
     toAscList :: t k a -> [(k, a)]
 
     insert :: Ord k => k -> a -> t k a -> t k a
-    insert = undefined {- insertWith -}
+    insert = insertWith const
 
     insertWith :: Ord k => (a -> a -> a) -> k -> a -> t k a -> t k a
-    insertWith = undefined {- alter -}
+    insertWith f k a t = alter (Just . (maybe a (f a))) k t
 
     insertWithKey :: Ord k => (k -> a -> a -> a) -> k -> a -> t k a -> t k a
-    insertWithKey = undefined {- insertWith -}
+    insertWithKey f k a t = insertWith (f k) k a t
 
     delete :: Ord k => k -> t k a -> t k a
     delete = undefined {- alter -}
@@ -73,3 +73,8 @@ class Map t where
     null = undefined {- size -}
 
     size :: t k a -> Int
+
+    check :: Eq a => Ord k => t k a -> [(k, a)] -> Bool
+    check _ [] = True
+    check t ((k, a):xs) | ((Map.lookup k t) == Just a) = check t xs
+                        | otherwise                      = False
