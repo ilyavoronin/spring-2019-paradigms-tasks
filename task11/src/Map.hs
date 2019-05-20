@@ -45,7 +45,7 @@ class Map t where
     insertWithKey f k a t = insertWith (f k) k a t
 
     delete :: Ord k => k -> t k a -> t k a
-    delete = undefined {- alter -}
+    delete k t = alter (\_ -> Nothing) k t
 
     adjust :: Ord k => (a -> a) -> k -> t k a -> t k a
     adjust = undefined {- alter -}
@@ -74,7 +74,10 @@ class Map t where
 
     size :: t k a -> Int
 
+    check' :: Eq a => Ord k => t k a -> [(k, a)] -> Bool
+    check' _ [] = True
+    check' t ((k, a):xs) | ((Map.lookup k t) == Just a) = check' t xs
+                         | otherwise                    = False
+
     check :: Eq a => Ord k => t k a -> [(k, a)] -> Bool
-    check _ [] = True
-    check t ((k, a):xs) | ((Map.lookup k t) == Just a) = check t xs
-                        | otherwise                      = False
+    check t x = ((size t) == (length x)) && (check' t x)
