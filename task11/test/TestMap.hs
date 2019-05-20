@@ -103,8 +103,35 @@ mapTests name (_ :: Proxy m) =
             testCase "adjust key from empty map" $
                 let f key x = (show key) ++ ":new " ++ x in
                 check (adjustWithKey f 7 (empty :: m Int String)) [] @?= True
-        ]
+        ],
 
+        testGroup "update" [
+            testCase "update existing key" $
+                let f x = if x == "a" then Just "new a" else Nothing in
+                check (update f 5 (fromList [(5,"a"), (3,"b")] :: m Int String)) [(3, "b"), (5, "new a")] @?= True
+            ,
+            testCase "update non-existing key" $
+                let f x = if x == "a" then Just "new a" else Nothing in
+                check (update f 7 (fromList [(5,"a"), (3,"b")] :: m Int String)) [(3, "b"), (5, "a")] @?= True
+            ,
+            testCase "update deletes key" $
+                let f x = if x == "a" then Just "new a" else Nothing in
+                check (update f 3 (fromList [(5,"a"), (3,"b")] :: m Int String)) [(5, "a")] @?= True
+        ],
+
+        testGroup "updateWithKey" [
+            testCase "update existing key" $
+                let f k x = if x == "a" then Just ((show k) ++ ":new a") else Nothing in
+                check (updateWithKey f 5 (fromList [(5,"a"), (3,"b")] :: m Int String)) [(3, "b"), (5, "5:new a")] @?= True
+            ,
+            testCase "update non-existing key" $
+                let f k x = if x == "a" then Just ((show k) ++ ":new a") else Nothing in
+                check (updateWithKey f 7 (fromList [(5,"a"), (3,"b")] :: m Int String)) [(3, "b"), (5, "a")] @?= True
+            ,
+            testCase "update deletes key" $
+                let f k x = if x == "a" then Just ((show k) ++ ":new a") else Nothing in
+                check (updateWithKey f 3 (fromList [(5,"a"), (3,"b")] :: m Int String)) [(5, "a")] @?= True
+        ]
     ]
 
 {-
