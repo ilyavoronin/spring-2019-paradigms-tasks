@@ -67,8 +67,8 @@ mapTests name (_ :: Proxy m) =
             let f key new_value old_value = (show key) ++ ":" ++ new_value ++ "|" ++ old_value in
             testCase "insert in empty map" $
                 check (insertWithKey f 5 "xxx" (empty :: m Int String)) [(5, "xxx")] @?= True
-        ]
-        ,
+        ],
+
         testGroup "delete" [
             testCase "delete existing key" $
                 check (delete 5 (fromList [(5, "a"), (3, "b")] :: m Int String)) [(3, "b")] @?= True
@@ -78,7 +78,33 @@ mapTests name (_ :: Proxy m) =
             ,
             testCase "delete from empty map" $
                 check (delete 5 (empty :: m Int String)) [] @?= True
+        ],
+
+        testGroup "adjust" [
+            testCase "adjust existing key" $
+                check (adjust ("new " ++) 5 (fromList [(5,"a"), (3,"b")] :: m Int String)) [(3, "b"), (5, "new a")] @?= True
+            ,
+            testCase "adjust non-existing key" $
+                check (adjust ("new " ++) 7 (fromList [(5,"a"), (3,"b")] :: m Int String)) [(3, "b"), (5, "a")] @?= True
+            ,
+            testCase "adjust key from empty map" $
+                check (adjust ("new " ++) 7 (empty :: m Int String)) [] @?= True
+        ],
+
+        testGroup "adjustWithKey" [
+            testCase "adjust existing key" $
+                let f key x = (show key) ++ ":new " ++ x in
+                check (adjustWithKey f 5 (fromList [(5,"a"), (3,"b")] :: m Int String)) [(3, "b"), (5, "5:new a")] @?= True
+            ,
+            testCase "adjust non-existing key" $
+                let f key x = (show key) ++ ":new " ++ x in
+                check (adjustWithKey f 7 (fromList [(5,"a"), (3,"b")] :: m Int String)) [(3, "b"), (5, "a")] @?= True
+            ,
+            testCase "adjust key from empty map" $
+                let f key x = (show key) ++ ":new " ++ x in
+                check (adjustWithKey f 7 (empty :: m Int String)) [] @?= True
         ]
+
     ]
 
 {-

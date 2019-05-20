@@ -48,10 +48,10 @@ class Map t where
     delete k t = alter (\_ -> Nothing) k t
 
     adjust :: Ord k => (a -> a) -> k -> t k a -> t k a
-    adjust = undefined {- alter -}
+    adjust f k t = alter ((maybe Nothing (Just . f))) k t
 
     adjustWithKey :: Ord k => (k -> a -> a) -> k -> t k a -> t k a
-    adjustWithKey = undefined {- adjust -}
+    adjustWithKey f k t = adjust (f k) k t
 
     update :: Ord k => (a -> Maybe a) -> k -> t k a -> t k a
     update = undefined {- alter -}
