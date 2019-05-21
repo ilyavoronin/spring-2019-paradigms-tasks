@@ -131,6 +131,30 @@ mapTests name (_ :: Proxy m) =
             testCase "update deletes key" $
                 let f k x = if x == "a" then Just ((show k) ++ ":new a") else Nothing in
                 check (updateWithKey f 3 (fromList [(5,"a"), (3,"b")] :: m Int String)) [(5, "a")] @?= True
+        ],
+
+        testGroup "member" [
+            testCase "member" $
+                member 5 (fromList [(5, "a"), (3, "b")] :: m Int String) @?= True
+            ,
+            testCase "not member" $
+                member 1 (fromList [(5, "a"), (3, "b")] :: m Int String) @?= False
+        ],
+
+        testGroup "notMember" [
+            testCase "member" $
+                notMember 5 (fromList [(5, "a"), (3, "b")] :: m Int String) @?= False
+            ,
+            testCase "not member" $
+                notMember 1 (fromList [(5, "a"), (3, "b")] :: m Int String) @?= True
+        ], 
+
+        testGroup "null" [
+            testCase "size == 0" $
+                Map.null (empty :: m Int String) @?= True
+            ,
+            testCase "size != 0" $
+                Map.null (fromList [(5, "a"), (3, "b")] :: m Int String) @?= False
         ]
     ]
 
