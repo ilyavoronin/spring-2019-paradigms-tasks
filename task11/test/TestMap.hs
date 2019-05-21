@@ -33,6 +33,14 @@ mapTests name (_ :: Proxy m) =
                 toAscList tr @?= [(1, "x"), (2, "a"), (3, "c")]
         ],
 
+        testGroup "singleton and empty" [
+            testCase "singleton" $
+                check (singleton 3 "b" :: m Int String) [(3, "b")] @?= True
+            ,
+            testCase "empty" $
+                check (empty :: m Int String) [] @?= True
+        ],
+
         testGroup "insert" [
             testCase "insert existing key" $
                 check (insert 7 "x" (fromList [(5, "a"), (3, "b")] :: m Int String)) [(3, "b"), (5, "a"), (7, "x")] @?= True
@@ -131,6 +139,29 @@ mapTests name (_ :: Proxy m) =
             testCase "update deletes key" $
                 let f k x = if x == "a" then Just ((show k) ++ ":new a") else Nothing in
                 check (updateWithKey f 3 (fromList [(5,"a"), (3,"b")] :: m Int String)) [(5, "a")] @?= True
+        ],
+
+        testGroup "alter" [
+            testCase "alter deletes key" $
+                let f _ = Nothing in
+                check (alter f 5 (fromList [(5,"a"), (3,"b")] :: m Int String)) [(3, "b")] @?= True
+            ,
+            testCase "alter adds key" $
+                let f _ = Just "c" in 
+                check (alter f 7 (fromList [(5,"a"), (3,"b")] :: m Int String)) [(3, "b"), (5, "a"), (7, "c")] @?= True
+            ,
+            testCase "alter doesn't add existing key" $
+                let f _ = Just "c" in 
+                check (alter f 5 (fromList [(5,"a"), (3,"b")] :: m Int String)) [(3, "b"), (5, "c")] @?= True
+
+        ],
+
+        testGroup "lookup" [
+            testCase "lookup returns val" $
+                Map.lookup 3 (fromList [(1, "a"), (2, "b"), (3, "c")] :: m Int String) @?= Just "c"
+            ,
+            testCase "lookup with non-existing key" $
+                Map.lookup 6 (fromList [(1, "a"), (2, "b"), (3, "c")] :: m Int String) @?= Nothing
         ],
 
         testGroup "member" [
