@@ -158,7 +158,7 @@ mapTests name (_ :: Proxy m) =
         ]
     ]
 
-{-
+
 testNaiveTree :: TestTree
 testNaiveTree = testGroup "Test NaiveTree" [
         testGroup "merge" [
@@ -172,13 +172,12 @@ testNaiveTree = testGroup "Test NaiveTree" [
                     @?= Node 1 "a" Nil (Node 2 "b" Nil Nil)
         ]
     ]
--}
 
 testMap :: TestTree
 testMap = testGroup "Testing implementations of trees"
     [
         mapTests "Data.Map.Strict" (Proxy :: Proxy SMap.Map),
-        mapTests "NaiveList" (Proxy :: Proxy NaiveList){-,
+        mapTests "NaiveList" (Proxy :: Proxy NaiveList),
         mapTests "NaiveTree" (Proxy :: Proxy NaiveTree),
-        testNaiveTree-}
+        testNaiveTree
     ]
